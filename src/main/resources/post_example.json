@@ -1,9 +1,9 @@
 {
+  WARNING format not implemented yet
   "url1": "url1",
   "url2": "url2",
   "method": "post",
-  "body": {
-    "field1": "param1Value",
-    "field2": "param2Value"
-  }
+  "parameters": "<parameters to append to URL>",
+  "body": <body>,
+  (optional)"exclude_fields": "<field1,field2,field3>"
 }

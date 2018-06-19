@@ -1,12 +1,8 @@
 package com.pliakh.restservicecomparison.impl;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-
 import com.pliakh.restservicecomparison.api.IResponseComparator;
 import com.pliakh.restservicecomparison.api.RestResponse;
 import com.pliakh.restservicecomparison.core.RestServiceComparator;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,12 +15,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+
 @RunWith(SpringRunner.class)
 @SpringBootConfiguration
 //@ActiveProfiles({"test"})
 public class ResponseComparatorTest {
 
-    //    @Autowired
+    //        @Autowired
     private RestServiceComparator restServiceComparator;
 
     //    @Autowired
@@ -65,7 +64,7 @@ public class ResponseComparatorTest {
         prepareResponse(url2, new RestResponse(11, HttpStatus.ACCEPTED, "val:qwe}"), "post");
 
         // when
-        restServiceComparator.doCompareRest(url1, url2, new String(),  new ArrayList<>());
+        restServiceComparator.doCompareRest(url1, url2, new String(), new ArrayList<>());
 
         // then no errors
         Assert.assertTrue(true);
@@ -74,12 +73,12 @@ public class ResponseComparatorTest {
     private void prepareResponse(String url, RestResponse restResponse, String method) {
         if ("get".equals(method)) {
             Mockito
-                .when(restCaller.doGet(eq(url), any()))
-                .thenReturn(restResponse);
+                    .when(restCaller.doGet(eq(url), any()))
+                    .thenReturn(restResponse);
         } else {
             Mockito
-                .when(restCaller.doPost(eq(url), any()))
-                .thenReturn(restResponse);
+                    .when(restCaller.doPost(eq(url), any()))
+                    .thenReturn(restResponse);
         }
     }
 }

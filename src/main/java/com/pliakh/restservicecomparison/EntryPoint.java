@@ -18,12 +18,14 @@ public class EntryPoint {
         SpringApplication app = new SpringApplication(EntryPoint.class);
         app.setBannerMode(Mode.OFF);
 
+        // TODO just parse arguments
+        // setting of log level variable doesn't work in classes
+        // since logger init happens during run method
         Arrays.stream(args).forEach(arg -> {
             if ("--LOGLEVEL=DEBUG".equals(arg.toUpperCase())) {
                 System.setProperty("LOG_LEVEL", "debug");
             }
         });
-
         app.run(args);
     }
 }
