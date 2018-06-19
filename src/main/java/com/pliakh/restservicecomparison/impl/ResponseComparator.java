@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.pliakh.restservicecomparison.api.IResponseComparator;
 import com.pliakh.restservicecomparison.api.RestResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -37,53 +36,53 @@ public class ResponseComparator implements IResponseComparator {
     void compareStatusCodes(RestResponse restResponse1, RestResponse restResponse2) {
         if (restResponse1.getHttpStatus().equals(restResponse2.getHttpStatus())) {
             prettyPrinter.infoPretty("Response codes equals", "Response code",
-                restResponse1.getHttpStatus(),
-                restResponse2.getHttpStatus());
+                    restResponse1.getHttpStatus(),
+                    restResponse2.getHttpStatus());
         } else {
             prettyPrinter.infoPretty("Different response codes", "Response code",
-                restResponse1.getHttpStatus().value(),
-                restResponse2.getHttpStatus().value());
+                    restResponse1.getHttpStatus().value(),
+                    restResponse2.getHttpStatus().value());
         }
         if (restResponse1.getHttpStatus() != HttpStatus.OK ||
-            restResponse2.getHttpStatus() != HttpStatus.OK) {
-            prettyPrinter.warnPretty(
-                String.format("Response code is not OK: url1 %s, url2 %s", restResponse1.getHttpStatus().value(),
-                    restResponse2.getHttpStatus().value()));
+                restResponse2.getHttpStatus() != HttpStatus.OK) {
+            prettyPrinter.warnPretty("Response code is not OK", "response code",
+                    restResponse1.getHttpStatus().value(),
+                    restResponse2.getHttpStatus().value());
         }
     }
 
     void compareResponseTime(RestResponse restResponse1, RestResponse restResponse2) {
         char comparisonSign =
-            restResponse1.getTime() == restResponse2.getTime()
-                ? '='
-                : restResponse1.getTime() > restResponse2.getTime()
-                ? '>'
-                : '<';
+                restResponse1.getTime() == restResponse2.getTime()
+                        ? '='
+                        : restResponse1.getTime() > restResponse2.getTime()
+                        ? '>'
+                        : '<';
         prettyPrinter.infoPretty(
-            String.format("Response time url1 %s url2", comparisonSign), "Response time", restResponse1.getTime(),
-            restResponse2.getTime());
+                String.format("Response time url1 %s url2", comparisonSign), "Response time", restResponse1.getTime(),
+                restResponse2.getTime());
     }
 
     void compareResponseEntitiesNumber(RestResponse restResponse1, RestResponse restResponse2) {
         int response1NodesCount = getJsonNodesCount(restResponse1.getResponseBody());
         int response2NodesCount = getJsonNodesCount(restResponse2.getResponseBody());
         if (response1NodesCount == response2NodesCount) {
-            prettyPrinter.infoPretty("Entites count equals", "entities count", response1NodesCount,
-                response2NodesCount);
+            prettyPrinter.infoPretty("Entities count equals", "entities count", response1NodesCount,
+                    response2NodesCount);
         } else {
             prettyPrinter.warnPretty("Entities count not equals", "entities count", response1NodesCount,
-                response2NodesCount);
+                    response2NodesCount);
         }
     }
 
     void compareResponseBodyPlain(RestResponse restResponse1, RestResponse restResponse2) {
         if (restResponse1.getResponseBody().equals(restResponse2.getResponseBody())) {
-            prettyPrinter.infoPretty("Responses equals");
+            prettyPrinter.info("Responses equals");
         } else {
             prettyPrinter.warnPretty("Responses are not equals", "Responses", null, null);
         }
-        prettyPrinter.prettyDebugTwoJsons(restResponse1.getResponseBody(),
-            restResponse2.getResponseBody());
+        prettyPrinter.prettyDebugTwoJson(restResponse1.getResponseBody(),
+                restResponse2.getResponseBody());
     }
 
     void compareResponseByEntites(RestResponse restResponse1, RestResponse restResponse2, List<String> excludeFields) {
@@ -114,28 +113,27 @@ public class ResponseComparator implements IResponseComparator {
         response1Nodes.removeAll(commonNodes);
         response2Nodes.removeAll(commonNodes);
 
-        prettyPrinter.debugPretty("Common nodes count: " + commonNodes.size());
+        prettyPrinter.debug("Common nodes count: " + commonNodes.size());
         if (!response1Nodes.isEmpty() && !response2Nodes.isEmpty()) {
-            prettyPrinter.warnPretty("Diff nodes count", "nodes count", response1Nodes.size(), response2Nodes.size());
+            prettyPrinter.warnPretty("Extra nodes in responses", "extra nodes #", response1Nodes.size(), response2Nodes.size());
         }
-
         if (commonNodes.isEmpty()) {
-            prettyPrinter.debugPretty("Common nodes: none");
+            prettyPrinter.debug("Common nodes: none");
         } else {
-            prettyPrinter.debugPretty("Common nodes");
-            commonNodes.forEach(node -> prettyPrinter.prettyDebugTwoJsons("", node.toString()));
+            prettyPrinter.debug("Common nodes");
+            commonNodes.forEach(node -> prettyPrinter.prettyDebugTwoJson("", node.toString()));
         }
         if (response1Nodes.isEmpty()) {
-            prettyPrinter.debugPretty("URL1 extra nodes: none");
+            prettyPrinter.debug("URL1 extra nodes: none");
         } else {
-            prettyPrinter.debugPretty("URL1 extra nodes: none");
-            response1Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJsons(node.toString(), ""));
+            prettyPrinter.debug("URL1 extra nodes: none");
+            response1Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJson(node.toString(), ""));
         }
         if (response2Nodes.isEmpty()) {
-            prettyPrinter.debugPretty("URL2 extra nodes: none");
+            prettyPrinter.debug("URL2 extra nodes: none");
         } else {
-            prettyPrinter.debugPretty("URL2 extra nodes:");
-            response2Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJsons("", node.toString()));
+            prettyPrinter.debug("URL2 extra nodes:");
+            response2Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJson("", node.toString()));
         }
     }
 
@@ -169,7 +167,7 @@ public class ResponseComparator implements IResponseComparator {
             return nodes;
         } catch (NullPointerException | IOException e) {
             // FIXME process or avoid exceptions
-            prettyPrinter.errorPretty("Unsuccessful trying to get content nodes");
+            prettyPrinter.error("Unsuccessful trying to get content nodes");
             return new ArrayList<>();
         }
     }
@@ -182,7 +180,7 @@ public class ResponseComparator implements IResponseComparator {
                 JsonNode response = root.get("response");
                 JsonNode content = response.get("content");
 
-                // logic to try get array node of find max count of fields
+                // logic to try get array node or find max count of fields
                 int size = -1;
                 if (content.isArray()) {
                     content = content.get(1);
@@ -205,7 +203,7 @@ public class ResponseComparator implements IResponseComparator {
                 return size;
             } catch (NullPointerException | IOException e) {
                 // FIXME process or avoid exceptions
-                prettyPrinter.errorPretty("Unsuccessful trying to get nodes count");
+                prettyPrinter.error("Unsuccessful trying to get nodes count");
                 return 0;
             }
         };

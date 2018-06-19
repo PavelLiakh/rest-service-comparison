@@ -13,7 +13,7 @@ dependencies {
     compile "io.rest-assured:rest-assured:${restuassuredVersion}"
 //    compile group: 'org.mock-server', name: 'mockserver-netty', version: '3.9.1'
     compile group: 'org.apache.commons', name: 'commons-io', version: '1.3.2'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging', version: '2.0.3.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging', version: "${springBootVersion}"
 }
 
 mainClassName = 'com.pliakh.restservicecomparison.EntryPoint'
@@ -21,8 +21,12 @@ mainClassName = 'com.pliakh.restservicecomparison.EntryPoint'
 // to pass parameter when running from 'gradle run'
 // use gradle run -PappArgs="['arg1', 'args2']"
 run {
+    description '-PappArgs="<line with args>; -Pdebug to enable debug"'
     if (project.hasProperty("appArgs")) {
         args appArgs
+    }
+    if (project.hasProperty("debug")) {
+        debug = true
     }
 }
 

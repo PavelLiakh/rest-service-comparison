@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <logger name="org.springframework.web" level="DEBUG"/>
+    <logger name="org.springframework.web" level="INFO"/>
 
-    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
-
+    <!-- Stop output INFO at start -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 
     <appender name="LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>rest-comparison.log</file>
@@ -19,15 +17,37 @@
         </triggeringPolicy>
         <append>false</append>
         <encoder>
-            <pattern>%-10level%msg%n</pattern>
+            <pattern>%-10level%-10date{dd MMM yyyy;HH:mm:ss}  %msg%n</pattern>
         </encoder>
     </appender>
 
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>Application: %-5level - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- logger to detect issues with inout file or arguments -->
+    <logger name="com.pliakh.restservicecomparison.core.RestServiceComparatorApplication" level="${LOG_LEVEL:-info}"
+            additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="com.pliakh.restservicecomparison.impl.RestCaller" level="${LOG_LEVEL:-info}"
+            additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <!-- main log file -->
     <logger name="com.pliakh" level="${LOG_LEVEL:-info}" additivity="false">
         <appender-ref ref="LOG_FILE"/>
     </logger>
 
+    <logger name="org.springframework" level="OFF" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
     <root level="INFO">
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
