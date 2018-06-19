@@ -6,32 +6,27 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.pliakh.restservicecomparison.api.IResponseComparator;
 import com.pliakh.restservicecomparison.api.RestResponse;
 
-import org.springframework.boot.logging.LogLevel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.logging.Logger;
 
 @Component
 public class ResponseComparator implements IResponseComparator {
 
-    private static final Logger LOGGER = Logger.getLogger(ResponseComparator.class.getName());
-
-    // message\n header(30chars align to left)| arg1 : arg2|
-    private static final String PRINT_FORMAT = "|%-30s\t|%-15s|%5s : %-5s|";
+    @Autowired
+    PrettyPrinter prettyPrinter;
 
     @Override
     public void doCompare(RestResponse restResponse1, RestResponse restResponse2, List<String> excludeFields) {
-        System.out.println("url1 = " + restResponse1.getUrl());
-        System.out.println("url2 = " + restResponse2.getUrl());
+        prettyPrinter.infoPretty("Urls to compare", "urls", restResponse1.getUrl(), restResponse2.getUrl());
         compareStatusCodes(restResponse1, restResponse2);
         compareResponseTime(restResponse1, restResponse2);
         compareResponseEntitiesNumber(restResponse1, restResponse2);
@@ -41,12 +36,19 @@ public class ResponseComparator implements IResponseComparator {
 
     void compareStatusCodes(RestResponse restResponse1, RestResponse restResponse2) {
         if (restResponse1.getHttpStatus().equals(restResponse2.getHttpStatus())) {
-            printPretty(LogLevel.INFO, "Response codes equals", "Response code", restResponse1.getHttpStatus(),
+            prettyPrinter.infoPretty("Response codes equals", "Response code",
+                restResponse1.getHttpStatus(),
                 restResponse2.getHttpStatus());
         } else {
-            printPretty(LogLevel.INFO, "Different response codes", "Response code",
+            prettyPrinter.infoPretty("Different response codes", "Response code",
                 restResponse1.getHttpStatus().value(),
                 restResponse2.getHttpStatus().value());
+        }
+        if (restResponse1.getHttpStatus() != HttpStatus.OK ||
+            restResponse2.getHttpStatus() != HttpStatus.OK) {
+            prettyPrinter.warnPretty(
+                String.format("Response code is not OK: url1 %s, url2 %s", restResponse1.getHttpStatus().value(),
+                    restResponse2.getHttpStatus().value()));
         }
     }
 
@@ -57,7 +59,7 @@ public class ResponseComparator implements IResponseComparator {
                 : restResponse1.getTime() > restResponse2.getTime()
                 ? '>'
                 : '<';
-        printPretty(LogLevel.INFO,
+        prettyPrinter.infoPretty(
             String.format("Response time url1 %s url2", comparisonSign), "Response time", restResponse1.getTime(),
             restResponse2.getTime());
     }
@@ -66,21 +68,21 @@ public class ResponseComparator implements IResponseComparator {
         int response1NodesCount = getJsonNodesCount(restResponse1.getResponseBody());
         int response2NodesCount = getJsonNodesCount(restResponse2.getResponseBody());
         if (response1NodesCount == response2NodesCount) {
-            printPretty(LogLevel.INFO, "Entites count equals", "entities count", response1NodesCount,
+            prettyPrinter.infoPretty("Entites count equals", "entities count", response1NodesCount,
                 response2NodesCount);
         } else {
-            printPretty(LogLevel.WARN, "Entities count not equals", "entities count", response1NodesCount,
+            prettyPrinter.warnPretty("Entities count not equals", "entities count", response1NodesCount,
                 response2NodesCount);
         }
     }
 
     void compareResponseBodyPlain(RestResponse restResponse1, RestResponse restResponse2) {
         if (restResponse1.getResponseBody().equals(restResponse2.getResponseBody())) {
-            printPretty(LogLevel.INFO, "Responses equals");
+            prettyPrinter.infoPretty("Responses equals");
         } else {
-            printPretty(LogLevel.WARN, "Responses are not equals", "Responses", null, null);
+            prettyPrinter.warnPretty("Responses are not equals", "Responses", null, null);
         }
-        prettyPrintTwoJsons(restResponse1.getResponseBody(),
+        prettyPrinter.prettyDebugTwoJsons(restResponse1.getResponseBody(),
             restResponse2.getResponseBody());
     }
 
@@ -111,23 +113,29 @@ public class ResponseComparator implements IResponseComparator {
         });
         response1Nodes.removeAll(commonNodes);
         response2Nodes.removeAll(commonNodes);
-        System.out.println("Common nodes");
+
+        prettyPrinter.debugPretty("Common nodes count: " + commonNodes.size());
+        if (!response1Nodes.isEmpty() && !response2Nodes.isEmpty()) {
+            prettyPrinter.warnPretty("Diff nodes count", "nodes count", response1Nodes.size(), response2Nodes.size());
+        }
+
         if (commonNodes.isEmpty()) {
-            System.out.println("none");
+            prettyPrinter.debugPretty("Common nodes: none");
         } else {
-            commonNodes.forEach(node -> prettyPrintTwoJsons("", node.toString()));
+            prettyPrinter.debugPretty("Common nodes");
+            commonNodes.forEach(node -> prettyPrinter.prettyDebugTwoJsons("", node.toString()));
         }
-        System.out.println("URL1 extra nodes");
         if (response1Nodes.isEmpty()) {
-            System.out.println("none");
+            prettyPrinter.debugPretty("URL1 extra nodes: none");
         } else {
-            response1Nodes.forEach(node -> prettyPrintTwoJsons(node.toString(), ""));
+            prettyPrinter.debugPretty("URL1 extra nodes: none");
+            response1Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJsons(node.toString(), ""));
         }
-        System.out.println("URL2 extra nodes");
         if (response2Nodes.isEmpty()) {
-            System.out.println("none");
+            prettyPrinter.debugPretty("URL2 extra nodes: none");
         } else {
-            response2Nodes.forEach(node -> prettyPrintTwoJsons("", node.toString()));
+            prettyPrinter.debugPretty("URL2 extra nodes:");
+            response2Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJsons("", node.toString()));
         }
     }
 
@@ -161,7 +169,7 @@ public class ResponseComparator implements IResponseComparator {
             return nodes;
         } catch (NullPointerException | IOException e) {
             // FIXME process or avoid exceptions
-            System.out.println("Unsuccessful trying to get content nodes");
+            prettyPrinter.errorPretty("Unsuccessful trying to get content nodes");
             return new ArrayList<>();
         }
     }
@@ -197,53 +205,10 @@ public class ResponseComparator implements IResponseComparator {
                 return size;
             } catch (NullPointerException | IOException e) {
                 // FIXME process or avoid exceptions
-                System.out.println("Unsuccessful trying to get nodes count");
+                prettyPrinter.errorPretty("Unsuccessful trying to get nodes count");
                 return 0;
             }
         };
         return responseToEntitiesCountFunction.apply(json);
-    }
-
-    private void prettyPrintTwoJsons(String json1, String json2) {
-        Function<String, List<String>> jsonToListOfLines = json -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String prettyJson = null;
-            try {
-                Object jsonObject = objectMapper.readValue(json, Object.class);
-                prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-            } catch (Exception e) {
-            }
-            return Objects.nonNull(prettyJson)
-                ? Arrays.asList(prettyJson.split("\n"))
-                : new ArrayList<>();
-        };
-
-        List<String> json1Lines = jsonToListOfLines.apply(json1);
-        List<String> json2Lines = jsonToListOfLines.apply(json2);
-        int i = 0;
-        System.out.println("-------------------------");
-        while (i < json1Lines.size() || i < json2Lines.size()) {
-            System.out.printf("%-100s | %-100s\n",
-                json1Lines.size() > i ? json1Lines.get(i) : "",
-                json2Lines.size() > i ? json2Lines.get(i) : "");
-            i++;
-        }
-        System.out.println("-------------------------");
-    }
-
-    // FIXME use log level
-    private void printPretty(LogLevel logLevel, String message) {
-//        LOGGER.info(message);
-        System.out.println(message);
-    }
-
-    // FIXME use log level
-    private void printPretty(LogLevel logLevel, String message, String parameterName, Object arg1, Object arg2) {
-        System.out.println(String.format(PRINT_FORMAT, message, parameterName,
-            Objects.nonNull(arg1) ? arg1.toString() : "",
-            Objects.nonNull(arg2) ? arg2.toString() : ""));
-//        LOGGER.info(String.format(PRINT_FORMAT, message, parameterName,
-//            Objects.nonNull(arg1) ? arg1.toString() : "",
-//            Objects.nonNull(arg2) ? arg2.toString() : ""));
     }
 }

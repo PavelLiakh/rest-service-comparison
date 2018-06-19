@@ -2,6 +2,7 @@ package com.pliakh.restservicecomparison.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pliakh.restservicecomparison.impl.PrettyPrinter;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class RestServiceComparatorApplication implements ApplicationRunner {
     private static final Logger LOGGER = Logger.getLogger(RestServiceComparatorApplication.class.getName());
 
     @Autowired
+    PrettyPrinter prettyPrinter;
+
+    @Autowired
     private RestServiceComparator restServiceComparator;
 
     /**
@@ -45,6 +49,7 @@ public class RestServiceComparatorApplication implements ApplicationRunner {
         checkArguments(args);
         Map<String, Object> parameters =
             readParameters(FileUtils.readFileToString(Paths.get(args.getOptionValues("file").get(0)).toFile()));
+
         if ("GET".equals(parameters.get("method").toString().toUpperCase())) {
             restServiceComparator.doCompareRest((String) parameters.get("url1"), (String) parameters.get("url2"),
                 (Map<String, String>) parameters.get("parameters"), (List<String>) parameters.get("exclude_fields"));
@@ -52,17 +57,18 @@ public class RestServiceComparatorApplication implements ApplicationRunner {
             restServiceComparator.doCompareRest((String) parameters.get("url1"), (String) parameters.get("url2"),
                 (String) parameters.get("body"), (List<String>) parameters.get("exclude_fields"));
         }
+        prettyPrinter.throwErrorsIfAny();
     }
 
     private void checkArguments(ApplicationArguments args) throws IOException, URISyntaxException {
-        LOGGER.info("Received properties: " + args.getSourceArgs());
-        if (args.getSourceArgs().length != 1) {
-            LOGGER.warning("Required file name as parameter. Run with '--man' to get manual.");
+//        LOGGER.info("Received properties: " + args.getSourceArgs().toString());
+        if (args.getSourceArgs().length < 1) {
+            LOGGER.warning("Required file name as parameter.");
             printMan();
         } else if (args.getOptionNames().contains("man")) {
             printMan();
         } else if (!args.getOptionNames().contains("file")) {
-            LOGGER.warning("Required file name as parameter. Run with '--man' to get manual.");
+            LOGGER.warning("Required file name as parameter.");
             System.exit(1);
         }
 
@@ -77,6 +83,19 @@ public class RestServiceComparatorApplication implements ApplicationRunner {
     }
 
     private void printMan() throws IOException, URISyntaxException {
+        System.out.println("To run application provide parameter \"file\".\n" +
+            "    example: java -jar <.jar> --file=<pathToFile> --logLevel=DEBUG");
+        System.out.println("\n" +
+            "Example:\n" +
+            "    {\n" +
+            "      \"url1\": \"url1\",\n" +
+            "      \"url2\": \"url2\",\n" +
+            "      \"method\": \"get\",\n" +
+            "      \"parameters\": {\n" +
+            "        \"parameterName1\": \"param1Value\",\n" +
+            "        \"parameterName2\": \"param2Value\"\n" +
+            "      }\n" +
+            "    }");
         // FIXME: does not work running from jar
         // Files.lines(Paths.get(ClassLoader.getSystemResource("man.txt").toURI())).forEach(System.out::println);
         // Caused by: java.nio.file.FileSystemNotFoundException
