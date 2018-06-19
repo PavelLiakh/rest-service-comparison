@@ -1,0 +1,9 @@
+{
+  "url1": "url1",
+  "url2": "url2",
+  "method": "post",
+  "body": {
+    "field1": "param1Value",
+    "field2": "param2Value"
+  }
+}
