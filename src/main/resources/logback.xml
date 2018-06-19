@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--<include resource="org/springframework/boot/logging/logback/base.xml"/>-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
+
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+
+
+    <appender name="LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>rest-comparison.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>rest-comparison.%i.log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>21</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+        <append>false</append>
+        <encoder>
+            <pattern>%-10level%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.pliakh" level="${LOG_LEVEL:-info}" additivity="false">
+        <appender-ref ref="LOG_FILE"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
