@@ -13,9 +13,9 @@
             <maxIndex>21</maxIndex>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>100MB</maxFileSize>
+            <maxFileSize>200MB</maxFileSize>
         </triggeringPolicy>
-        <append>false</append>
+        <append>true</append>
         <encoder>
             <pattern>%-10level%-10date{dd MMM yyyy;HH:mm:ss}  %msg%n</pattern>
         </encoder>

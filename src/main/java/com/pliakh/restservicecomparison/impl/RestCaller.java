@@ -41,6 +41,7 @@ public class RestCaller implements IRestCaller {
 
     private RestResponse doCall(String url, String method, RequestSpecification requestSpecification) {
         Response restResponse = null;
+        LOGGER.debug("Start call: " + url);
         try {
             restResponse = method.equals("get")
                 ? requestSpecification.when().get()
