@@ -19,7 +19,8 @@ dependencies {
 mainClassName = 'com.pliakh.restservicecomparison.EntryPoint'
 
 // to pass parameter when running from 'gradle run'
-// use gradle run -PappArgs="['arg1', 'args2']"
+// use gradle run -PappArgs="<line with args>"
+// add -Pdebug start with debug
 run {
     description '-PappArgs="<line with args>; -Pdebug to enable debug"'
     if (project.hasProperty("appArgs")) {

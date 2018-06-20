@@ -1,6 +1,0 @@
-{
-  "url1": "localhost:8080/asdad",
-  "url2": "url2",
-  "method": "get",
-  "parameters": "<parameters to append to URL>"
-}
