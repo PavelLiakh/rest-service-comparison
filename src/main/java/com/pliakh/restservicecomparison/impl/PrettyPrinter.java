@@ -85,10 +85,10 @@ public class PrettyPrinter {
 
     public void showProblemsIfAny() {
         if (!commonWarnings.isEmpty()) {
-            LOGGER.warn("Summary problems:");
+            LOGGER.warn("Summary problems (run with --logLevel=debug to get more info):");
             commonWarnings.forEach(LOGGER::warn);
             Logger appLogger = LoggerFactory.getLogger(RestServiceComparatorApplication.class.getName());
-            appLogger.warn("Summary problems:");
+            appLogger.warn("Summary problems (run with --logLevel=debug to get more info):");
             commonWarnings.forEach(appLogger::warn);
             System.exit(2);
         } else {
