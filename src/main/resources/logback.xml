@@ -17,7 +17,7 @@
         </triggeringPolicy>
         <append>true</append>
         <encoder>
-            <pattern>%-10level%-10date{dd MMM yyyy;HH:mm:ss}  %msg%n</pattern>
+            <pattern>%-10level%-10date{dd MMM yyyy;HH:mm:ss} %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -28,12 +28,12 @@
     </appender>
 
     <!-- logger to detect issues with inout file or arguments -->
-    <logger name="com.pliakh.restservicecomparison.core.RestServiceComparatorApplication" level="${LOG_LEVEL:-info}"
+    <logger name="application" level="${LOG_LEVEL:-info}"
             additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="com.pliakh.restservicecomparison.impl.RestCaller" level="${LOG_LEVEL:-info}"
+    <logger name="application" level="${LOG_LEVEL:-info}"
             additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>

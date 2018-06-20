@@ -1,9 +1,6 @@
 package com.pliakh.restservicecomparison.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pliakh.restservicecomparison.EntryPoint;
-import com.pliakh.restservicecomparison.core.RestServiceComparatorApplication;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,7 +14,7 @@ import java.util.function.Function;
 @Component
 public class PrettyPrinter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EntryPoint.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrettyPrinter.class.getName());
 
     // message\n header(30chars align to left)| arg1 : arg2|
     private static final String PRINT_FORMAT = "|%-30s\t|%-15s|%5s : %-5s|";
@@ -70,8 +67,8 @@ public class PrettyPrinter {
             int i = 0;
             while (i < json1Lines.size() || i < json2Lines.size()) {
                 LOGGER.debug(String.format("%-100s | %-100s",
-                    json1Lines.size() > i ? json1Lines.get(i) : "",
-                    json2Lines.size() > i ? json2Lines.get(i) : ""));
+                        json1Lines.size() > i ? json1Lines.get(i) : "",
+                        json2Lines.size() > i ? json2Lines.get(i) : ""));
                 i++;
             }
         } else {
@@ -80,19 +77,6 @@ public class PrettyPrinter {
             LOGGER.debug(json1);
             LOGGER.debug("Response from url1:");
             LOGGER.debug(json1);
-        }
-    }
-
-    public void showProblemsIfAny() {
-        if (!commonWarnings.isEmpty()) {
-            LOGGER.warn("Summary problems (run with --logLevel=debug to get more info):");
-            commonWarnings.forEach(LOGGER::warn);
-            Logger appLogger = LoggerFactory.getLogger(RestServiceComparatorApplication.class.getName());
-            appLogger.warn("Summary problems (run with --logLevel=debug to get more info):");
-            commonWarnings.forEach(appLogger::warn);
-            System.exit(2);
-        } else {
-            LOGGER.info("Summary: responses are similar");
         }
     }
 
