@@ -64,7 +64,7 @@ public class ResponseComparatorTest {
         prepareResponse(url2, new RestResponse(11, HttpStatus.ACCEPTED, "val:qwe}"), "post");
 
         // when
-        restServiceComparator.doCompareRest(url1, url2, new String(), new ArrayList<>());
+        restServiceComparator.doCompareRest(url1, url2, new HashMap<>(), "", new ArrayList<>());
 
         // then no errors
         Assert.assertTrue(true);
@@ -77,7 +77,7 @@ public class ResponseComparatorTest {
                     .thenReturn(restResponse);
         } else {
             Mockito
-                    .when(restCaller.doPost(eq(url), any()))
+                    .when(restCaller.doPost(eq(url), any(), eq(any())))
                     .thenReturn(restResponse);
         }
     }

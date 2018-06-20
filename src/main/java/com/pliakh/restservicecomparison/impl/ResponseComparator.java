@@ -29,8 +29,8 @@ public class ResponseComparator implements IResponseComparator {
         compareStatusCodes(restResponse1, restResponse2);
         compareResponseTime(restResponse1, restResponse2);
         compareResponseEntitiesNumber(restResponse1, restResponse2);
-        compareResponseBodyPlain(restResponse1, restResponse2);
         compareResponseByEntites(restResponse1, restResponse2, excludeFields);
+        compareResponseBodyPlain(restResponse1, restResponse2);
     }
 
     void compareStatusCodes(RestResponse restResponse1, RestResponse restResponse2) {
@@ -76,13 +76,15 @@ public class ResponseComparator implements IResponseComparator {
     }
 
     void compareResponseBodyPlain(RestResponse restResponse1, RestResponse restResponse2) {
-        if (restResponse1.getResponseBody().equals(restResponse2.getResponseBody())) {
-            prettyPrinter.info("Responses equals (plain comparsion)");
-        } else {
-            prettyPrinter.warn("Responses are not equals (plain comparsion)");
-        }
-        prettyPrinter.prettyDebugTwoJson(restResponse1.getResponseBody(),
-                restResponse2.getResponseBody());
+//        if (restResponse1.getResponseBody().equals(restResponse2.getResponseBody())) {
+//            prettyPrinter.info("Responses equals (plain comparsion)");
+//        } else {
+//            prettyPrinter.warn("Responses are not equals (plain comparsion)");
+//        }
+//        prettyPrinter.prettyDebugTwoJson(restResponse1.getResponseBody(),
+//                restResponse2.getResponseBody());
+        prettyPrinter.debug("Response1 body: " + restResponse1.getResponseBody());
+        prettyPrinter.debug("Response2 body: " + restResponse2.getResponseBody());
     }
 
     void compareResponseByEntites(RestResponse restResponse1, RestResponse restResponse2, List<String> excludeFields) {
@@ -113,7 +115,7 @@ public class ResponseComparator implements IResponseComparator {
         response1Nodes.removeAll(commonNodes);
         response2Nodes.removeAll(commonNodes);
 
-        prettyPrinter.debug("Common nodes count: " + commonNodes.size());
+        prettyPrinter.info("Common nodes count: " + commonNodes.size());
         if (!response1Nodes.isEmpty() && !response2Nodes.isEmpty()) {
             prettyPrinter.warnPretty("Extra nodes in responses", "extra nodes #", response1Nodes.size(), response2Nodes.size());
         }
@@ -121,19 +123,24 @@ public class ResponseComparator implements IResponseComparator {
             prettyPrinter.debug("Common nodes: none");
         } else {
             prettyPrinter.debug("Common nodes");
-            commonNodes.forEach(node -> prettyPrinter.prettyDebugTwoJson("", node.toString()));
+//            commonNodes.forEach(node -> prettyPrinter.prettyDebugTwoJson("", node.toString()));
+//            commonNodes.forEach(node -> prettyPrinter.debug());
         }
         if (response1Nodes.isEmpty()) {
-            prettyPrinter.debug("URL1 extra nodes: none");
+            prettyPrinter.info("No extra nodes in URL1");
         } else {
-            prettyPrinter.debug("URL1 extra nodes: none");
-            response1Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJson(node.toString(), ""));
+            prettyPrinter.info("URL1 extra nodes count: " + response1Nodes.size());
+            prettyPrinter.debug("URL1 extra nodes:");
+            response1Nodes.forEach(node -> prettyPrinter.debug(node.toString()));
+//            response1Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJson(node.toString(), ""));
         }
         if (response2Nodes.isEmpty()) {
-            prettyPrinter.debug("URL2 extra nodes: none");
+            prettyPrinter.info("No extra nodes in URL2");
         } else {
+            prettyPrinter.info("URL2 extra nodes count: " + response1Nodes.size());
             prettyPrinter.debug("URL2 extra nodes:");
-            response2Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJson("", node.toString()));
+            response2Nodes.forEach(node -> prettyPrinter.debug(node.toString()));
+//            response2Nodes.forEach(node -> prettyPrinter.prettyDebugTwoJson("", node.toString()));
         }
     }
 
