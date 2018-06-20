@@ -1,5 +1,6 @@
 package com.pliakh.restservicecomparison;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
@@ -22,7 +23,7 @@ public class EntryPoint {
         // setting of log level variable doesn't work in classes
         // since logger init happens during run method
         Arrays.stream(args).forEach(arg -> {
-            if ("--LOGLEVEL=DEBUG".equals(arg.toUpperCase())) {
+            if (StringUtils.containsIgnoreCase(arg.toUpperCase(), "--LOGLEVEL=DEBUG")) {
                 System.setProperty("LOG_LEVEL", "debug");
             }
         });

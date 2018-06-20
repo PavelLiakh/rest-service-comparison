@@ -6,5 +6,5 @@ public interface IRestCaller {
 
     RestResponse doGet(String url, Map<String, String> parameters);
 
-    RestResponse doPost(String url, String body);
+    RestResponse doPost(String url, Map<String, String> parameters, String body);
 }

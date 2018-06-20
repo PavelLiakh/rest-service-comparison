@@ -2,6 +2,8 @@ package com.pliakh.restservicecomparison.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pliakh.restservicecomparison.EntryPoint;
+import com.pliakh.restservicecomparison.core.RestServiceComparatorApplication;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -64,12 +66,20 @@ public class PrettyPrinter {
 
         List<String> json1Lines = jsonToListOfLines.apply(json1);
         List<String> json2Lines = jsonToListOfLines.apply(json2);
-        int i = 0;
-        while (i < json1Lines.size() || i < json2Lines.size()) {
-            LOGGER.debug(String.format("%-100s | %-100s",
+        if (!json1Lines.isEmpty() || !json2Lines.isEmpty()) {
+            int i = 0;
+            while (i < json1Lines.size() || i < json2Lines.size()) {
+                LOGGER.debug(String.format("%-100s | %-100s",
                     json1Lines.size() > i ? json1Lines.get(i) : "",
                     json2Lines.size() > i ? json2Lines.get(i) : ""));
-            i++;
+                i++;
+            }
+        } else {
+            LOGGER.info("Invalid or empty responses ");
+            LOGGER.debug("Response from url1:");
+            LOGGER.debug(json1);
+            LOGGER.debug("Response from url1:");
+            LOGGER.debug(json1);
         }
     }
 
@@ -77,7 +87,12 @@ public class PrettyPrinter {
         if (!commonWarnings.isEmpty()) {
             LOGGER.warn("Summary problems:");
             commonWarnings.forEach(LOGGER::warn);
+            Logger appLogger = LoggerFactory.getLogger(RestServiceComparatorApplication.class.getName());
+            appLogger.warn("Summary problems:");
+            commonWarnings.forEach(appLogger::warn);
             System.exit(2);
+        } else {
+            LOGGER.info("Summary: responses are similar");
         }
     }
 

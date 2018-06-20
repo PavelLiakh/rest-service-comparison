@@ -4,6 +4,7 @@ import com.pliakh.restservicecomparison.api.IResponseComparator;
 import com.pliakh.restservicecomparison.api.RestResponse;
 import com.pliakh.restservicecomparison.impl.PrettyPrinter;
 import com.pliakh.restservicecomparison.impl.RestCaller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -40,9 +41,14 @@ public class RestServiceComparator {
         responseComparator.doCompare(restResponse1, restResponse2, excludeFields);
     }
 
-    public void doCompareRest(String url1, String url2, String body, List<String> excludeFields) {
-        RestResponse restResponse1 = restCaller.doPost(url1, body);
-        RestResponse restResponse2 = restCaller.doPost(url2, body);
+    public void doCompareRest(String url1, String url2, Map<String, String> parameters, String body,
+                              List<String> excludeFields) {
+        RestResponse restResponse1 = restCaller.doPost(url1, parameters, body);
+        RestResponse restResponse2 = restCaller.doPost(url2, parameters, body);
+        if (Objects.isNull(restResponse1) || Objects.isNull(restResponse2)) {
+            prettyPrinter.warn("Cannot access urls. Exit");
+            System.exit(2);
+        }
         responseComparator.doCompare(restResponse1, restResponse2, excludeFields);
     }
 }

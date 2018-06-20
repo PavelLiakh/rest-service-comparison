@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.pliakh.restservicecomparison.api.IResponseComparator;
 import com.pliakh.restservicecomparison.api.RestResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -77,9 +78,9 @@ public class ResponseComparator implements IResponseComparator {
 
     void compareResponseBodyPlain(RestResponse restResponse1, RestResponse restResponse2) {
         if (restResponse1.getResponseBody().equals(restResponse2.getResponseBody())) {
-            prettyPrinter.info("Responses equals");
+            prettyPrinter.info("Responses equals (plain comparsion)");
         } else {
-            prettyPrinter.warnPretty("Responses are not equals", "Responses", null, null);
+            prettyPrinter.warn("Responses are not equals (plain comparsion)");
         }
         prettyPrinter.prettyDebugTwoJson(restResponse1.getResponseBody(),
                 restResponse2.getResponseBody());
