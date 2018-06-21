@@ -79,8 +79,8 @@ public class ResponseComparator implements IResponseComparator {
     }
 
     private void logResponseBodie(RestResponse restResponse1, RestResponse restResponse2) {
-        prettyPrinter.debug("Response 1 body: " + restResponse1.getResponseBody());
-        prettyPrinter.debug("Response 2 body: " + restResponse2.getResponseBody());
+        prettyPrinter.debug("Response 1 body:\n" + restResponse1.getResponseBody());
+        prettyPrinter.debug("Response 2 body:\n" + restResponse2.getResponseBody());
     }
 
     private void compareResponseByEntites(RestResponse restResponse1, RestResponse restResponse2,
@@ -119,12 +119,10 @@ public class ResponseComparator implements IResponseComparator {
             prettyPrinter.info("All response nodes equals");
         }
         if (!response1Nodes.isEmpty()) {
-            prettyPrinter.debug("URL1 extra nodes:");
-            prettyPrinter.debug(response1Nodes);
+            prettyPrinter.debug("URL1 extra nodes:", response1Nodes);
         }
         if (!response2Nodes.isEmpty()) {
-            prettyPrinter.debug("URL2 extra nodes:");
-            prettyPrinter.debug(response2Nodes);
+            prettyPrinter.debug("URL2 extra nodes:", response2Nodes);
         }
     }
 

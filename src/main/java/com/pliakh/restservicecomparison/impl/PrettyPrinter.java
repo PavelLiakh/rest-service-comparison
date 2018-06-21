@@ -51,8 +51,8 @@ public class PrettyPrinter {
         LOGGER.debug(message);
     }
 
-    public void debug(List<JsonNode> message) {
-        LOGGER.debug(StringUtils.join(message, "\n"));
+    public void debug(String message, List<JsonNode> messageList) {
+        LOGGER.debug(message + "\n" + StringUtils.join(messageList, "\n"));
     }
 
     private String msg(String message, String parameterName, Object arg1, Object arg2) {
