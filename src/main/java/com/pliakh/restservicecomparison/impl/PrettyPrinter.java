@@ -1,7 +1,6 @@
 package com.pliakh.restservicecomparison.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +14,6 @@ import java.util.Objects;
 public class PrettyPrinter {
 
     private final Logger LOGGER = LoggerFactory.getLogger(PrettyPrinter.class.getName());
-
-    public PrettyPrinter() {
-        infoPretty("<Message>", "<parameter>", "<url1>", "<url2>");
-    }
-
-    // message\n header(30chars align to left)| arg1 : arg2|
-    private static final String PRINT_FORMAT = "|%-30s\t|%-15s|%5s : %-5s|";
 
     private static List<String> commonWarnings = new ArrayList<>();
 
@@ -56,8 +48,8 @@ public class PrettyPrinter {
     }
 
     private String msg(String message, String parameterName, Object arg1, Object arg2) {
-        return String.format(PRINT_FORMAT, message, parameterName,
-                Objects.nonNull(arg1) ? arg1.toString() : "",
-                Objects.nonNull(arg2) ? arg2.toString() : "");
+        return String.format("%s. %s1=%s, %s2=%s", message,
+                parameterName, Objects.nonNull(arg1) ? arg1.toString() : "",
+                parameterName, Objects.nonNull(arg2) ? arg2.toString() : "");
     }
 }
