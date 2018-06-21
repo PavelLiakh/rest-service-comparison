@@ -33,11 +33,6 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="application" level="${LOG_LEVEL:-info}"
-            additivity="false">
-        <appender-ref ref="STDOUT"/>
-    </logger>
-
     <!-- main log file -->
     <logger name="com.pliakh" level="${LOG_LEVEL:-info}" additivity="false">
         <appender-ref ref="LOG_FILE"/>

@@ -13,7 +13,7 @@ public class EntryPointIntegrationTests {
     @Test
     public void contextLoads_Get() throws IOException {
         // FIXME mock rest services for test
-        RestServiceComparatorApplication.main(new String[]{"--file=src/main/resources/get_example.json"});
+        RestServiceComparatorApplication.main(new String[]{"-d", "--file=get_example.json"});
     }
 
     @Test
