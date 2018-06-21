@@ -1,23 +1,24 @@
 package com.pliakh.restservicecomparison.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pliakh.restservicecomparison.EntryPoint;
-import com.pliakh.restservicecomparison.core.RestServiceComparatorApplication;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 @Component
 public class PrettyPrinter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EntryPoint.class.getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(PrettyPrinter.class.getName());
+
+    public PrettyPrinter() {
+        infoPretty("<Message>", "<parameter>", "<url1>", "<url2>");
+    }
 
     // message\n header(30chars align to left)| arg1 : arg2|
     private static final String PRINT_FORMAT = "|%-30s\t|%-15s|%5s : %-5s|";
@@ -50,50 +51,8 @@ public class PrettyPrinter {
         LOGGER.debug(message);
     }
 
-    public void prettyDebugTwoJson(String json1, String json2) {
-        Function<String, List<String>> jsonToListOfLines = json -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String prettyJson = null;
-            try {
-                Object jsonObject = objectMapper.readValue(json, Object.class);
-                prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-            } catch (Exception e) {
-            }
-            return Objects.nonNull(prettyJson)
-                    ? Arrays.asList(prettyJson.split("\n"))
-                    : new ArrayList<>();
-        };
-
-        List<String> json1Lines = jsonToListOfLines.apply(json1);
-        List<String> json2Lines = jsonToListOfLines.apply(json2);
-        if (!json1Lines.isEmpty() || !json2Lines.isEmpty()) {
-            int i = 0;
-            while (i < json1Lines.size() || i < json2Lines.size()) {
-                LOGGER.debug(String.format("%-100s | %-100s",
-                    json1Lines.size() > i ? json1Lines.get(i) : "",
-                    json2Lines.size() > i ? json2Lines.get(i) : ""));
-                i++;
-            }
-        } else {
-            LOGGER.info("Invalid or empty responses ");
-            LOGGER.debug("Response from url1:");
-            LOGGER.debug(json1);
-            LOGGER.debug("Response from url1:");
-            LOGGER.debug(json1);
-        }
-    }
-
-    public void showProblemsIfAny() {
-        if (!commonWarnings.isEmpty()) {
-            LOGGER.warn("Summary problems (run with --logLevel=debug to get more info):");
-            commonWarnings.forEach(LOGGER::warn);
-            Logger appLogger = LoggerFactory.getLogger(RestServiceComparatorApplication.class.getName());
-            appLogger.warn("Summary problems (run with --logLevel=debug to get more info):");
-            commonWarnings.forEach(appLogger::warn);
-            System.exit(2);
-        } else {
-            LOGGER.info("Summary: responses are similar");
-        }
+    public void debug(List<JsonNode> message) {
+        LOGGER.debug(StringUtils.join(message, "\n"));
     }
 
     private String msg(String message, String parameterName, Object arg1, Object arg2) {

@@ -36,7 +36,7 @@ public class RestServiceComparator {
         RestResponse restResponse2 = restCaller.doGet(url2, parameters);
         if (Objects.isNull(restResponse1) || Objects.isNull(restResponse2)) {
             prettyPrinter.warn("Cannot access urls. Exit");
-            System.exit(2);
+            System.exit(7);
         }
         responseComparator.doCompare(restResponse1, restResponse2, excludeFields);
     }
@@ -47,7 +47,7 @@ public class RestServiceComparator {
         RestResponse restResponse2 = restCaller.doPost(url2, parameters, body);
         if (Objects.isNull(restResponse1) || Objects.isNull(restResponse2)) {
             prettyPrinter.warn("Cannot access urls. Exit");
-            System.exit(2);
+            System.exit(8);
         }
         responseComparator.doCompare(restResponse1, restResponse2, excludeFields);
     }
