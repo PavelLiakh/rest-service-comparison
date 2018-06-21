@@ -1,0 +1,26 @@
+{
+  "response": {
+    "status": {
+      "code": "SUCCESS",
+      "message": "OK"
+    },
+    "content": {
+      "filed1": "2",
+      "field2": "44",
+      "field3": [
+        {
+          "field4": "a",
+          "fiekd5": "b"
+        },
+        {
+          "field4": "118539147",
+          "field5": "c"
+        },
+        {
+          "field5": "jg",
+          "field4": "asd"
+        }
+      ]
+    }
+  }
+}

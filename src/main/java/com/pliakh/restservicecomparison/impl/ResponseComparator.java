@@ -26,7 +26,7 @@ public class ResponseComparator implements IResponseComparator {
 
     @Override
     public void doCompare(RestResponse restResponse1, RestResponse restResponse2, List<String> excludeFields) {
-        prettyPrinter.infoPretty("Urls to compare", "urls", restResponse1.getUrl(), restResponse2.getUrl());
+        prettyPrinter.infoPretty("Urls to compare", "Url", restResponse1.getUrl(), restResponse2.getUrl());
         compareStatusCodes(restResponse1, restResponse2);
         compareResponseTime(restResponse1, restResponse2);
         compareResponseEntitiesNumber(restResponse1, restResponse2);
@@ -36,17 +36,17 @@ public class ResponseComparator implements IResponseComparator {
 
     private void compareStatusCodes(RestResponse restResponse1, RestResponse restResponse2) {
         if (restResponse1.getHttpStatus().equals(restResponse2.getHttpStatus())) {
-            prettyPrinter.infoPretty("Response codes equals", "Response code",
+            prettyPrinter.infoPretty("Response codes equals", "ResponseCode",
                 restResponse1.getHttpStatus(),
                 restResponse2.getHttpStatus());
         } else {
-            prettyPrinter.infoPretty("Different response codes", "Response code",
+            prettyPrinter.infoPretty("Different response codes", "ResponseCode",
                 restResponse1.getHttpStatus().value(),
                 restResponse2.getHttpStatus().value());
         }
         if (restResponse1.getHttpStatus() != HttpStatus.OK ||
             restResponse2.getHttpStatus() != HttpStatus.OK) {
-            prettyPrinter.warnPretty("Response code is not OK", "response code",
+            prettyPrinter.warnPretty("Response code is not OK", "ResponseCode",
                 restResponse1.getHttpStatus().value(),
                 restResponse2.getHttpStatus().value());
         }
@@ -60,7 +60,7 @@ public class ResponseComparator implements IResponseComparator {
                 ? '>'
                 : '<';
         prettyPrinter.infoPretty(
-            String.format("Response time url1 %s url2", comparisonSign), "Response time", restResponse1.getTime(),
+            String.format("Response time url1 %s url2", comparisonSign), "ResponseTime", restResponse1.getTime(),
             restResponse2.getTime());
     }
 
@@ -68,12 +68,12 @@ public class ResponseComparator implements IResponseComparator {
         int response1NodesCount = getJsonNodesCount(restResponse1.getResponseBody());
         int response2NodesCount = getJsonNodesCount(restResponse2.getResponseBody());
         if (response1NodesCount == response2NodesCount && response1NodesCount == 0) {
-            prettyPrinter.warn("Entites count in both responses is 0 or cannot detect response nodes");
+            prettyPrinter.error("Entites count in both responses is 0 or cannot detect response nodes");
         } else if (response1NodesCount == response2NodesCount) {
-            prettyPrinter.infoPretty("Entities count equals", "entities count", response1NodesCount,
+            prettyPrinter.infoPretty("Entities count equals", "EntitiesCount", response1NodesCount,
                 response2NodesCount);
         } else {
-            prettyPrinter.warnPretty("Entities count not equals", "entities count", response1NodesCount,
+            prettyPrinter.warnPretty("Entities count not equals", "EntitiesCount", response1NodesCount,
                 response2NodesCount);
         }
     }
@@ -113,16 +113,16 @@ public class ResponseComparator implements IResponseComparator {
         response2Nodes.removeAll(commonNodes);
 
         if (!response1Nodes.isEmpty() || !response2Nodes.isEmpty()) {
-            prettyPrinter.warnPretty("Extra nodes in responses", "extra nodes #", response1Nodes.size(),
+            prettyPrinter.warnPretty("Extra nodes in responses", "ExtraNodesCount", response1Nodes.size(),
                 response2Nodes.size());
         } else {
             prettyPrinter.info("All response nodes equals");
         }
         if (!response1Nodes.isEmpty()) {
-            prettyPrinter.debug("URL1 extra nodes:", response1Nodes);
+            prettyPrinter.debug("Url1 Extra nodes.", response1Nodes);
         }
         if (!response2Nodes.isEmpty()) {
-            prettyPrinter.debug("URL2 extra nodes:", response2Nodes);
+            prettyPrinter.debug("URL2 extra nodes.", response2Nodes);
         }
     }
 
